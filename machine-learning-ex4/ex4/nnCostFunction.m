@@ -66,12 +66,90 @@ Theta2_grad = zeros(size(Theta2));
 
 
 
+% Generate Y in format [0 1 0 0 0 0 0 0 0 0; ....]
+Y = zeros(m,10);
+for i = 1:m,
+	Y(i,y(i)) = 1;
+end
+
+
+%  output_layer_costs(example,label)
+output_layer_costs = zeros(m,num_labels); % cost function for every example in output layer
+delta_3 = zeros(m,num_labels); % delta "error" for every example in output layer
+delta_2 = zeros(m,hidden_layer_size); % delta "error" for every example in hidden layer
+DELTA_1 = zeros(size(Theta1)); % DELTA acumulative error for layer 1
+DELTA_2 = zeros(size(Theta2)); % DELTA acumulative error for layer 2
+for i = 1:m,
+	% FORWARD PROPAGATION for example i
+	% Layer 1
+	% size 401x1
+	a1 = [1 X(i,:)];
+
+	% Layer 2
+	% size 1x26
+	a2 = sigmoid(a1 * Theta1');
+
+	% hidden_layer_costs(i) = sum(-(1/m)*sum(Y(i,:).*log(a2) + (1-Y(i,:)).*log(1-a2)));
+
+	% Layer 3
+	a2 = [1 a2];
+	a3 = sigmoid(a2 * Theta2');	% a3 prediction of example i
+
+	% if(size(log(a3)) ~= [1 10]),
+	% 	size(log(a3))
+	% end
+
+	% size(Y(i,:)) = 1x10
+	% size(a3) = 1x10
+
+	% l = log(a3);
+	% p = Y(i,:);
+
+
+	% a = (p.*l);
+	% % size(l)
+
+	% b = (1-Y(i,:)).*log(1-a3);
+
+	output_layer_costs(i,:) = -(1/m)*(Y(i,:).*log(a3) + (1-Y(i,:)).*log(1-a3));
+	
+	% BACK PROPAGATION for example i
+
+	% size(delta_3(i,:)) 10x1
+	delta_3(i,:) = (a3 - Y(i,:))';
+	
+	% size(((delta_3(i,:)*Theta2).*(a2.*(1-a2)))') 26x1
+	delta_2_temp = ((delta_3(i,:)*Theta2).*(a2.*(1-a2)))';
+
+	% remove bias element
+	delta_2_temp(1,:) = [];
+
+	% size(delta_2(i,:)) 25x1
+	delta_2(i,:) = delta_2_temp;
+
+	
+	DELTA_1 = DELTA_1 + delta_2(i,:)'*a1;
+	DELTA_2 = DELTA_2 + delta_3(i,:)'*a2;
+
+end
 
 
 
+J = sum(sum(output_layer_costs));
+
+
+% Regularization
+theta_temp1 = Theta1;
+theta_temp1(1) = 0;
+theta_temp2 = Theta2;
+theta_temp2(1) = 0;
+J = J + sum((lambda/(2*m))*sum(theta_temp1.^2)) + sum((lambda/(2*m))*sum(theta_temp2.^2));
 
 
 
+Theta1_grad = (1/m)*DELTA_1 + lambda*theta_temp1;
+
+Theta2_grad = (1/m)*DELTA_2 + lambda*theta_temp2;
 
 
 

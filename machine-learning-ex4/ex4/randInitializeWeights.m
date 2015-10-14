@@ -19,13 +19,8 @@ W = zeros(L_out, 1 + L_in);
 % Note: The first row of W corresponds to the parameters for the bias units
 %
 
-
-
-
-
-
-
-
+INIT_EPSILON = 0.8;
+W = (2*INIT_EPSILON)*rand(L_out, 1 + L_in) - INIT_EPSILON;
 
 % =========================================================================
 
