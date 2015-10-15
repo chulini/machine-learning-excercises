@@ -67,7 +67,7 @@ Theta2_grad = zeros(size(Theta2));
 
 
 % Generate Y in format [0 1 0 0 0 0 0 0 0 0; ....]
-Y = zeros(m,10);
+Y = zeros(m,num_labels);
 for i = 1:m,
 	Y(i,y(i)) = 1;
 end
@@ -94,11 +94,7 @@ for i = 1:m,
 	% Layer 3
 	a2 = [1 a2];
 	a3 = sigmoid(a2 * Theta2');	% a3 prediction of example i
-
-	% if(size(log(a3)) ~= [1 10]),
-	% 	size(log(a3))
-	% end
-
+	
 	% size(Y(i,:)) = 1x10
 	% size(a3) = 1x10
 
