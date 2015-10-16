@@ -135,19 +135,19 @@ J = sum(sum(output_layer_costs));
 
 
 % Regularization
-theta_temp1 = Theta1;
-theta_temp1(1) = 0;
-theta_temp2 = Theta2;
-theta_temp2(1) = 0;
-J = J + sum((lambda/(2*m))*sum(theta_temp1.^2)) + sum((lambda/(2*m))*sum(theta_temp2.^2));
+theta1_temp = Theta1;
+theta1_temp(:,1) = zeros(hidden_layer_size,1);
+theta2_temp = Theta2;
+theta2_temp(:,1) = zeros(num_labels,1);;
 
 
 
-Theta1_grad = (1/m)*DELTA_1 + lambda*theta_temp1;
-
-Theta2_grad = (1/m)*DELTA_2 + lambda*theta_temp2;
+J = J + sum((lambda/(2*m))*sum(theta1_temp.^2)) + sum((lambda/(2*m))*sum(theta2_temp.^2));
 
 
+
+Theta1_grad = (1/m)*DELTA_1 + (lambda/m)*theta1_temp;
+Theta2_grad = (1/m)*DELTA_2 + (lambda/m)*theta2_temp;
 
 
 
